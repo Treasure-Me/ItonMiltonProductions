@@ -127,7 +127,7 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
 document.getElementById("contact-form").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    emailjs.sendForm("service_afzwzpe", "template_m42iacf", this)
+    emailjs.sendForm("service_oi6077l", "template_rbfr82n", this)
         .then(function() {
             alert("Message sent successfully!");
         }, function(error) {
