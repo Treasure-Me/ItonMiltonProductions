@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles/BookStyle.css">
+</head>
+<body>
+    <div id="errorMessage" class="error-message"></div>
+    <form id="booking-form">
+        <div>
+            <label for="name" class="block text-sm font-bold mb-2">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500 focus:outline-none transition">
+        </div>
+        <div>
+            <label for="venue" class="block text-sm font-bold mb-2">Venue</label>
+            <input type="text" id="venue" name="venue" placeholder="Enter Venue" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500 focus:outline-none transition">
+        </div>
+        <div>
+            <label for="service" class="block text-sm font-bold mb-2">Service Interested In</label>
+            <select id="service" name="service" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500 focus:outline-none transition">
+                <option value="">Select a service</option>
+                <option value="photography">Photography</option>
+                <option value="videography">Videography</option>
+                <option value="modelling">Modelling</option>
+                <option value="combined">Combined Services</option>
+            </select>
+        </div>
+        <div>
+            <label for="booking-date" class="block text-sm font-bold mb-2">Select Date</label>
+            <input type="datetime-local" id="booking-date" name="book_date" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500 focus:outline-none transition">
+        </div>
+        <button type="submit" class="btn-primary w-full py-3 rounded-lg font-bold text-lg">Book Service</button>
+    </form>
+<script>
+    const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://your-backend-url.koyeb.app";
+
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+    document.getElementById('booking-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        hideError();
+
+        const name = document.getElementById('name').value.trim();
+        const venue = document.getElementById('venue').value;
+        const service = document.getElementById('service').value;
+        const date = document.getElementById('booking-date').value;
+
+        if (!name) {
+            showError('name is required');
+            return;
+        }else if (!venue){
+            showError('venue is required');
+            return;
+        }else if (!service){
+            showError('service is required');
+            return;
+        }else if (!date){
+            showError('Date is required');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/new-booking`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, venue, service, date })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                showError(result.message);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('Network error. Please check server connection.');
+        }
+    });
+</script>
+</body>
+</html>
