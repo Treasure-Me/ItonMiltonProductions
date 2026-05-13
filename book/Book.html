@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Service - CameraOn Productions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../styles/BookStyle.css">
+    <link rel="icon" href="../branding/logo.jpg" type="image/x-icon">
+    <style>
+        /* Custom scrollbar for the location dropdown */
+        #locationResults::-webkit-scrollbar {
+            width: 8px;
+        }
+        #locationResults::-webkit-scrollbar-thumb {
+            background-color: #4B5563;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-4">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-95 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 h-11 flex justify-between items-center">
+            <div class="flex items-center gap-3"><img src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/iton.milton.productions/profile_pic.jpg" alt="Iton Milton Productions Logo" class="w-12 h-12 rounded-lg object-cover" onerror="console.error('Logo failed to load:', this.src); this.style.display='none';">
+                <div class="logo-container">
+                    <img src="../branding/logo.jpg" alt="Company Logo">
+                    <div class="logo-text">
+                        <h1>CameraOn</h1>
+                        <p>Photography &amp; Videography</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-8 items-center">
+                <button class="btn-primary px-6 py-2 rounded-lg text-sm" onclick="window.location.href = '../index.html'">Home</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-2xl">
+        <h2 class="text-3xl font-bold mb-6 text-center text-yellow-500">Book a Session</h2>
+
+        <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg mb-6 text-sm"></div>
+
+        <form id="booking-form" class="space-y-5">
+            <div>
+                <label for="name" class="block text-sm font-bold mb-2">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name"
+                       class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition">
+            </div>
+
+            <div class="relative">
+                <label for="venue" class="block text-sm font-bold mb-2">Venue</label>
+                <input type="text" id="venue" name="venue" placeholder="Search for a studio or enter address" autocomplete="off"
+                       class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition">
+
+                <ul id="locationResults" class="absolute z-10 w-full bg-gray-700 border border-gray-600 rounded-b-lg shadow-xl max-h-48 overflow-y-auto empty:hidden mt-1 text-sm">
+                </ul>
+            </div>
+
+            <div>
+                <label for="service" class="block text-sm font-bold mb-2">Service Interested In</label>
+                <select id="service" name="service"
+                        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition appearance-none">
+                    <option value="">Select a service</option>
+                    <option value="photography">Photography</option>
+                    <option value="videography">Videography</option>
+                    <option value="modelling">Modelling</option>
+                    <option value="combined">Combined Services</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="booking-date" class="block text-sm font-bold mb-2">Select Date & Time</label>
+                <input type="datetime-local" id="booking-date" name="book_date"
+                       class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition cursor-pointer">
+            </div>
+
+            <div>
+                <label for="session-length" class="block text-sm font-bold mb-2">Session Length</label>
+                <select id="session-length" name="session-length"
+                        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition appearance-none">
+                    <option value="">Select duration</option>
+                    <option value="30">30 mins</option>
+                    <option value="45">45 mins</option>
+                    <option value="60">1 Hour</option>
+                    <option value="90">1 Hour 30 Mins</option>
+                    <option value="105">1 Hour 45 Mins</option>
+                    <option value="120">2 Hours</option>
+                    <option value="180">3 Hours (Maximum)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-3 rounded-lg font-bold text-lg transition duration-200 mt-4">
+                Book Service
+            </button>
+        </form>
+    </div>
+
+    <div id="statusModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl text-center max-w-sm w-full relative">
+
+            <div id="modal-loading" class="flex flex-col items-center justify-center py-6">
+                <svg class="animate-spin h-12 w-12 text-yellow-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <h3 class="text-xl font-bold text-white">Processing Booking...</h3>
+                <p class="text-sm text-gray-400 mt-2">Please do not close this window.</p>
+            </div>
+
+            <div id="modal-success" class="hidden flex-col items-center justify-center">
+                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-500/20 mb-4 mx-auto">
+                    <svg class="h-10 w-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Booking Confirmed!</h3>
+                <p class="text-gray-400 mb-6">Your session has been successfully booked. We look forward to seeing you.</p>
+                <button id="modalReturnHomeBtn" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-3 rounded-lg font-bold transition">
+                    Return to Home
+                </button>
+            </div>
+
+            <div id="modal-error" class="hidden flex-col items-center justify-center">
+                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-red-500/20 mb-4 mx-auto">
+                    <svg class="h-10 w-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Booking Failed</h3>
+                <p id="modal-error-text" class="text-red-400 mb-6">Something went wrong.</p>
+                <button id="modalRetryBtn" class="w-full border border-gray-500 text-gray-300 hover:bg-gray-700 py-3 rounded-lg font-bold transition">
+                    Close & Try Again
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.hostname === "localhost"
+            ? "http://localhost:5000"
+            : "https://cameraon-backend.onrender.com";
+
+        let typingTimer;
+        const doneTypingInterval = 500;
+
+        let isValidLocationSelected = false;
+        let confirmedLocationText = "";
+
+        const form = document.getElementById('booking-form');
+        const errorDiv = document.getElementById('errorMessage');
+        const locationInput = document.getElementById('venue');
+        const resultsDropdown = document.getElementById('locationResults');
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+        }
+
+        locationInput.addEventListener('input', () => {
+            isValidLocationSelected = false;
+
+            clearTimeout(typingTimer);
+            const query = locationInput.value.trim();
+
+            if (query) {
+                typingTimer = setTimeout(() => fetchStudios(query), doneTypingInterval);
+            } else {
+                resultsDropdown.innerHTML = '';
+            }
+        });
+
+        locationInput.addEventListener('blur', () => {
+            if (!isValidLocationSelected || locationInput.value !== confirmedLocationText) {
+                locationInput.value = '';
+                confirmedLocationText = '';
+                resultsDropdown.innerHTML = '';
+
+                if (locationInput.value.length > 0) {
+                    showError("Please select a verified location from the dropdown menu.");
+                }
+            }
+        });
+
+        async function fetchStudios(query) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/places-search?location=${query}`);
+                const data = await response.json();
+                console.log(data);
+
+                if (data.results && data.results.length > 0) {
+                    displayResults(data.results);
+                } else {
+                    resultsDropdown.innerHTML = '<li class="p-3 text-gray-400 italic">No studios found.</li>';
+                }
+            } catch (error) {
+                console.error("Error fetching locations:", error);
+
+
+            }
+        }
+
+        function displayResults(places) {
+            resultsDropdown.innerHTML = '';
+
+            places.forEach(place => {
+                const li = document.createElement('li');
+                li.className = "p-3 hover:bg-gray-600 cursor-pointer border-b border-gray-600 last:border-0 transition";
+                li.innerHTML = `<span class="font-bold text-yellow-500">${place.name}</span><br><span class="text-xs text-gray-300">${place.formatted_address}</span>`;
+
+                li.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+
+                    const fullAddress = `${place.name}, ${place.formatted_address}`;
+                    locationInput.value = fullAddress;
+
+                    isValidLocationSelected = true;
+                    confirmedLocationText = fullAddress;
+
+                    resultsDropdown.innerHTML = '';
+                    hideError();
+                });
+
+                resultsDropdown.appendChild(li);
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!locationInput.contains(e.target) && !resultsDropdown.contains(e.target)) {
+                resultsDropdown.innerHTML = '';
+            }
+        });
+
+        const statusModal = document.getElementById('statusModal');
+        const modalLoading = document.getElementById('modal-loading');
+        const modalSuccess = document.getElementById('modal-success');
+        const modalError = document.getElementById('modal-error');
+        const modalErrorText = document.getElementById('modal-error-text');
+
+        document.getElementById('modalReturnHomeBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('modalRetryBtn').addEventListener('click', () => {
+            statusModal.classList.add('hidden');
+        });
+
+        function setModalState(state) {
+            modalLoading.classList.add('hidden');
+            modalSuccess.classList.add('hidden');
+            modalError.classList.add('hidden');
+
+            if (state === 'loading') modalLoading.classList.remove('hidden');
+            if (state === 'success') modalSuccess.classList.remove('hidden');
+            if (state === 'error') modalError.classList.remove('hidden');
+        }
+
+
+        document.getElementById('booking-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideError();
+
+            const name = document.getElementById('name').value.trim();
+            const venue = document.getElementById('venue').value.trim();
+            const service = document.getElementById('service').value;
+            const startDateString = document.getElementById('booking-date').value; // e.g., "2026-05-13T14:30"
+            const sessionMinutes = document.getElementById('session-length').value;
+
+            if (!name || !venue || !service || !startDateString || !sessionMinutes) {
+                showError('Please fill out all fields before submitting.');
+                return;
+            }
+
+            const startDate = new Date(startDateString);
+
+            const endDate = new Date(startDate.getTime() + parseInt(sessionMinutes) * 60000);
+
+            const offset = endDate.getTimezoneOffset() * 60000;
+            const formattedEndDate = (new Date(endDate - offset)).toISOString().slice(0, 16);
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            statusModal.classList.remove('hidden');
+            setModalState('loading');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/new-booking`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        venue: venue,
+                        service: service,
+                        startDate: startDateString,
+                        endDate: formattedEndDate
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success || response.ok) {
+                    setModalState('success');
+                } else {
+                    setModalState('error');
+                    modalErrorText.textContent = result.message || 'Failed to process booking.';
+                    submitBtn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error('Booking submission error:', error);
+                setModalState('error');
+                modalErrorText.textContent = 'Network error. Please check your connection.';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
