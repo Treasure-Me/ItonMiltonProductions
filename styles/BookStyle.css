@@ -1,8 +1,47 @@
-/* General page styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container img {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.logo-text p {
+    margin: 0;
+    font-size: 0.6rem;
+    color: #555;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    color: #f5f5f5;
+    background-image: url('../branding/images/studio-session.jpg'); /* path to your image */
+    background-repeat: no-repeat;           /* prevents the image from tiling */
+    background-size: cover;                 /* resizes the image to cover the entire screen */
+    background-position: center;            /* centers the background image */
+    background-attachment: fixed;
+    /*color: #f5f5f5;*/
+    /*color: #f5f5f5;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -50,22 +89,19 @@ select:focus {
     outline: none;
 }
 
-/* Button */
-button.btn-primary {
-    background: linear-gradient(135deg, #ffcc00, #ff9900);
-    border: none;
-    color: #121212;
-    font-weight: bold;
-    font-size: 1.1rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.btn-primary {
+    background: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: 1px solid #d4af37;
 }
 
-button.btn-primary:hover {
+.btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 153, 0, 0.4);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    background: #1a1a1a;
+    border-color: #d4af37;
 }
 
 /* Error message */
@@ -78,4 +114,24 @@ button.btn-primary:hover {
     margin-bottom: 1rem;
     font-weight: bold;
     text-align: center;
+}
+
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #d4af37;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
 }
