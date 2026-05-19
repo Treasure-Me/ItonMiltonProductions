@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../styles/BookStyle.css">
     <link rel="icon" href="../branding/logo.jpg" type="image/x-icon">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         /* Custom scrollbar for the location dropdown */
         #locationResults::-webkit-scrollbar {
@@ -43,10 +44,26 @@
         <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg mb-6 text-sm"></div>
 
         <form id="booking-form" class="space-y-5">
-            <div>
-                <label for="name" class="block text-sm font-bold mb-2">Your Name</label>
-                <input type="text" id="name" name="name" placeholder="Enter your name"
-                       class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition">
+            <div id="auth-badge" class="hidden bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-lg p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider font-bold mb-1">Authenticated Account</p>
+                    <p class="text-sm text-white">Booking as: <span id="auth-name-display" class="font-bold text-[#d4af37]"></span></p>
+                </div>
+                <i class="fa-solid fa-circle-check text-[#d4af37] text-xl"></i>
+            </div>
+
+            <div id="guest-fields" class="space-y-5">
+                <div>
+                    <label for="name" class="block text-sm font-bold mb-2">Your Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name"
+                           class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-bold mb-2">Your Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email"
+                           class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition">
+                </div>
             </div>
 
             <div class="relative">
@@ -142,6 +159,37 @@
         const API_BASE_URL = window.location.hostname === "localhost"
             ? "http://localhost:5000"
             : "https://cameraon-backend.onrender.com";
+
+        let isLoggedIn = false;
+        let sessionUser = { name: "", email: "" };
+
+        // Check Auth Status on Page Load
+        async function initializeForm() {
+            try {
+                // Try to hit the protected dashboard endpoint
+                const response = await fetch(`${API_BASE_URL}/api/private/dashboard-data`, {
+                    credentials: 'include' // Send the JWT Cookie!
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    isLoggedIn = true;
+                    // Store the data Java sends back
+                    sessionUser.name = data.user.name;
+                    sessionUser.email = data.user.email;
+
+                    // Transform the UI!
+                    document.getElementById('guest-fields').classList.add('hidden');
+                    document.getElementById('auth-badge').classList.remove('hidden');
+                    document.getElementById('auth-name-display').textContent = sessionUser.name;
+                }
+            } catch (error) {
+                console.log("User is a guest. Showing standard form.");
+            }
+        }
+
+        // Run the check immediately
+        document.addEventListener('DOMContentLoaded', initializeForm);
 
         let typingTimer;
         const doneTypingInterval = 500;
@@ -267,13 +315,16 @@
             e.preventDefault();
             hideError();
 
-            const name = document.getElementById('name').value.trim();
+            // SMART ROUTING: Get data from Session OR from the Inputs
+            const name = isLoggedIn ? sessionUser.name : document.getElementById('name').value.trim();
+            const email = isLoggedIn ? sessionUser.email : document.getElementById('email').value.trim();
+
             const venue = document.getElementById('venue').value.trim();
             const service = document.getElementById('service').value;
-            const startDateString = document.getElementById('booking-date').value; // e.g., "2026-05-13T14:30"
+            const startDateString = document.getElementById('booking-date').value;
             const sessionMinutes = document.getElementById('session-length').value;
 
-            if (!name || !venue || !service || !startDateString || !sessionMinutes) {
+            if (!name || !email || !venue || !service || !startDateString || !sessionMinutes) {
                 showError('Please fill out all fields before submitting.');
                 return;
             }
@@ -297,11 +348,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         name: name,
+                        email: email,
                         venue: venue,
                         service: service,
                         startDate: startDateString,
                         endDate: formattedEndDate
-                    })
+                    }),
+                    credentials: 'include'
                 });
 
                 const result = await response.json();
