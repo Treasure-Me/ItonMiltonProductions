@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | CameraOn</title>
+
+    <link rel="icon" href="../branding/logo.jpg" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../styles/itonStyle.css">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        .gold-accent { color: #d4af37; }
+        .focus-gold:focus { border-color: #d4af37; box-shadow: 0 0 0 1px #d4af37; }
+        .bg-overlay { background-color: rgba(0, 0, 0, 0.85); }
+    </style>
+</head>
+
+<body class="h-full flex items-center justify-center bg-black bg-[url('../branding/brand-photo.jpg')] bg-cover bg-center bg-no-repeat bg-blend-overlay bg-overlay text-white font-[Montserrat]">
+
+<div class="w-full max-w-md px-4">
+
+    <div class="text-center mb-8 animate-in">
+        <img src="../branding/logo.jpg" alt="CameraOn Logo" class="w-20 h-20 mx-auto rounded-lg mb-4 border border-gray-800 shadow-lg object-cover">
+        <h1 class="text-4xl font-black mb-2" style="font-family: 'Playfair Display', serif;">Welcome Back</h1>
+        <p class="text-gray-400 text-sm">Sign in to your CameraOn account</p>
+    </div>
+
+    <div class="bg-gray-950 border border-gray-800 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-[#d4af37]"></div>
+
+        <div id="google-button-container" class="w-full mb-6 flex justify-center"></div>
+
+        <div class="flex items-center my-6">
+            <div class="flex-grow h-px bg-gray-800"></div>
+            <span class="px-4 text-sm text-gray-500">OR</span>
+            <div class="flex-grow h-px bg-gray-800"></div>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-bold mb-2 text-gray-300">Email Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-envelope text-gray-500"></i>
+                    </div>
+                    <input type="email" id="email" name="email" placeholder="hello@example.com" required
+                           class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <label for="password" class="block text-sm font-bold text-gray-300">Password</label>
+                    <a href="#" class="text-xs gold-accent hover:text-white transition">Forgot Password?</a>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-lock text-gray-500"></i>
+                    </div>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required
+                           class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-3 mt-4 rounded-lg font-bold text-lg shadow-lg hover:scale-[1.02] transition-transform duration-200" style="background-color: #d4af37; color: black;">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-sm text-gray-400 border-t border-gray-900 pt-6">
+            New to CameraOn?
+            <a href="../register/register.html" class="gold-accent font-bold hover:text-white transition ml-1">Create an account</a>
+        </div>
+    </div>
+
+    <div class="text-center mt-8">
+        <a href="../" class="text-sm text-gray-500 hover:text-white transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://cameraon-backend.onrender.com";
+
+    async function handleCredentialResponse(response) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ credential: response.credential })
+            });
+
+            if (res.ok) {
+                window.location.href = '../dashboard/dashboard.html';
+            } else {
+                alert("Google Login Failed.");
+            }
+        } catch (error) {
+            console.error("Error connecting to backend:", error);
+        }
+    }
+
+    window.onload = function () {
+        google.accounts.id.initialize({
+            client_id: "606434478548-723vopnjnbguhvbjq3efaqf7qm8km4ii.apps.googleusercontent.com",
+            callback: handleCredentialResponse,
+            cancel_on_tap_outside: false,
+            context: "signin"
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById("google-button-container"),
+            { theme: "outline", size: "large", shape: "rectangular"}
+        );
+
+        google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                console.log("One Tap was blocked or skipped.");
+            }
+        });
+    };
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                window.location.href = '../dashboard/dashboard.html';
+            } else {
+                alert("Login failed: " + data.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error("Network Error:", error);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
