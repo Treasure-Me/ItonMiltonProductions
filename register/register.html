@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | CameraOn</title>
+
+    <link rel="icon" href="../branding/logo.jpg" type="image/x-icon">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../styles/itonStyle.css">
+
+    <style>
+        .gold-accent { color: #d4af37; }
+        .focus-gold:focus { border-color: #d4af37; box-shadow: 0 0 0 1px #d4af37; }
+        .bg-overlay { background-color: rgba(0, 0, 0, 0.85); }
+
+        /* Custom scrollbar for smaller screens where the form might scroll */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+    </style>
+</head>
+
+<body class="h-full flex items-center justify-center bg-black bg-[url('../branding/brand-photo.jpg')] bg-cover bg-center bg-no-repeat bg-blend-overlay bg-overlay text-white font-[Montserrat] py-10">
+
+<div class="w-full max-w-lg px-4 overflow-y-auto">
+
+    <div class="text-center mb-8 animate-in">
+        <h1 class="text-4xl font-black mb-2" style="font-family: 'Playfair Display', serif;">Join CameraOn</h1>
+        <p class="text-gray-400 text-sm">Create an account to manage your bookings</p>
+    </div>
+
+    <div class="bg-gray-950 border border-gray-800 rounded-xl p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-[#d4af37]"></div>
+
+        <form id="register-form" class="space-y-5">
+
+            <div id="error-message" class="hidden bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm mb-4">
+                Passwords do not match.
+            </div>
+
+            <div>
+                <label for="username" class="block text-sm font-bold mb-2 text-gray-300">Full Name</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-user text-gray-500"></i>
+                    </div>
+                    <input type="text" id="username" name="username" placeholder="John Doe" required
+                           class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                </div>
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-bold mb-2 text-gray-300">Email Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-envelope text-gray-500"></i>
+                    </div>
+                    <input type="email" id="email" name="email" placeholder="hello@example.com" required
+                           class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                </div>
+            </div>
+
+            <div>
+                <label for="number" class="block text-sm font-bold mb-2 text-gray-300">Phone Number</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-phone text-gray-500"></i>
+                    </div>
+                    <input type="tel" id="number" name="number" placeholder="+27 63 000 0000" required
+                           class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label for="password" class="block text-sm font-bold mb-2 text-gray-300">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-500"></i>
+                        </div>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required minlength="8"
+                               class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="confirm_password" class="block text-sm font-bold mb-2 text-gray-300">Confirm Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-check-double text-gray-500"></i>
+                        </div>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required minlength="8"
+                               class="w-full bg-black border border-gray-800 rounded-lg pl-11 pr-4 py-3 text-white focus:outline-none focus-gold transition placeholder-gray-600">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-3 mt-6 rounded-lg font-bold text-lg shadow-lg hover:scale-[1.02] transition-transform duration-200" style="background-color: #d4af37; color: black;">
+                Create Account
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-sm text-gray-400 border-t border-gray-900 pt-6">
+            Already have an account?
+            <a href="../login/login.html" class="gold-accent font-bold hover:text-white transition ml-1">Sign in here</a>
+        </div>
+    </div>
+
+    <div class="text-center mt-8 pb-8">
+        <a href="../" class="text-sm text-gray-500 hover:text-white transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Back to Homepage
+        </a>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://cameraon-backend.onrender.com";
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const number = document.getElementById('number').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const errorBox = document.getElementById('error-message');
+
+        // 1. Frontend Validation: Check if passwords match
+        if (password !== confirmPassword) {
+            errorBox.textContent = "Passwords do not match. Please try again.";
+            errorBox.classList.remove('hidden');
+
+            // Add a red border temporarily to show the error
+            document.getElementById('confirm_password').classList.add('border-red-500');
+            return; // Stop the function here, don't send to server
+        } else {
+            errorBox.classList.add('hidden');
+            document.getElementById('confirm_password').classList.remove('border-red-500');
+        }
+
+        // 2. UI Loading State
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/create-account`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, number, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Success! Send them to login immediately.
+                window.location.href = '../login/login.html?registered=true';
+            } else {
+                // Failure! Show the error message and reset the button.
+                errorBox.textContent = data.message || "Registration failed. Email might be in use.";
+                errorBox.classList.remove('hidden');
+
+                // YOU MUST RESET THE BUTTON HERE TOO!
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+
+        } catch (error) {
+            console.error("Network Error:", error);
+            errorBox.textContent = "Failed to connect to the server. Please try again later.";
+            errorBox.classList.remove('hidden');
+
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
