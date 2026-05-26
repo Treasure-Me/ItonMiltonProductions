@@ -133,7 +133,7 @@
                     ${!isHistory ? `
                     <div class="mt-5 pt-4 border-t border-gray-800 flex gap-3">
                         <button class="text-sm font-semibold text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded transition">Reschedule</button>
-                        <button onclick="cancelSession(${booking.id})" class="text-sm font-semibold text-red-400 hover:text-red-300 px-4 py-2 transition">Cancel</button>
+                        <button onclick="cancelSession(${booking.email},${booking.venue}, ${booking.startDate})" class="text-sm font-semibold text-red-400 hover:text-red-300 px-4 py-2 transition">Cancel</button>
                     </div>` : ''}
                 </div>
             `;
@@ -194,11 +194,11 @@
         }
     }
 
-    async function cancelSession(bookingId) {
+    async function cancelSession(bookingEmail, bookingVenue, startDate) {
         if (!confirm("Are you sure you want to cancel this session?")) return;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/private/bookings/${bookingId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/private/bookings?email=${bookingEmail}&venue=${bookingVenue}&date=${startDate}`, {
                 method: 'DELETE',
                 credentials: 'include' // Send the JWT cookie!
             });
