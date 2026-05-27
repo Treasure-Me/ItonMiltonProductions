@@ -108,6 +108,15 @@
                 </select>
             </div>
 
+            <div>
+                <label for="payment-method" class="block text-sm font-bold mb-2">Payment Method</label>
+                <select id="payment-method" name="payment-method"
+                        class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 focus:outline-none transition appearance-none">
+                    <option value="payfast">Pay Now Securely (PayFast)</option>
+                    <option value="in_person">Pay on Arrival / Manual EFT</option>
+                </select>
+            </div>
+
             <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-3 rounded-lg font-bold text-lg transition duration-200 mt-4">
                 Book Service
             </button>
@@ -323,6 +332,7 @@
             const service = document.getElementById('service').value;
             const startDateString = document.getElementById('booking-date').value;
             const sessionMinutes = document.getElementById('session-length').value;
+            const paymentMethod = document.getElementById('payment-method').value;
 
             if (!name || !email || !venue || !service || !startDateString || !sessionMinutes) {
                 showError('Please fill out all fields before submitting.');
@@ -352,15 +362,20 @@
                         venue: venue,
                         service: service,
                         startDate: startDateString,
-                        endDate: formattedEndDate
+                        endDate: formattedEndDate,
+                        paymentMethod: paymentMethod
                     }),
                     credentials: 'include'
                 });
 
                 const result = await response.json();
 
-                if (result.success || response.ok) {
-                    setModalState('success');
+                if (response.ok && result.success) {
+                    if (result.redirectUrl) {
+                        window.location.href = result.redirectUrl;
+                    } else {
+                        setModalState('success');
+                    }
                 } else {
                     setModalState('error');
                     modalErrorText.textContent = result.message || 'Failed to process booking.';
