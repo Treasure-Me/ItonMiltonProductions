@@ -198,7 +198,9 @@
         if (!confirm("Are you sure you want to cancel this session?")) return;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/private/bookings?email=${bookingEmail}&venue=${bookingVenue}&date=${startDate}`, {
+            // NOTE: If you update your backend to use the booking ID (e.g., /api/private/bookings/{id}),
+            // you will want to swap this URL structure out for that cleaner approach!
+            const response = await fetch(`${API_BASE_URL}/api/private/bookings?email=${encodeURIComponent(bookingEmail)}&venue=${encodeURIComponent(bookingVenue)}&date=${encodeURIComponent(startDate)}`, {
                 method: 'DELETE',
                 credentials: 'include' // Send the JWT cookie!
             });
