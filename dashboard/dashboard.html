@@ -133,7 +133,7 @@
                     ${!isHistory ? `
                     <div class="mt-5 pt-4 border-t border-gray-800 flex gap-3">
                         <button class="text-sm font-semibold text-white bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded transition">Reschedule</button>
-                        <button onclick="cancelSession(${booking.email},${booking.venue}, ${booking.startDate})" class="text-sm font-semibold text-red-400 hover:text-red-300 px-4 py-2 transition">Cancel</button>
+                        <button onclick="cancelSession('${booking.email}', '${booking.venue}', '${booking.startDate}')" class="text-sm font-semibold text-red-400 hover:text-red-300 px-4 py-2 transition">Cancel</button>
                     </div>` : ''}
                 </div>
             `;
@@ -144,8 +144,16 @@
             const dashResponse = await fetch(`${API_BASE_URL}/api/private/dashboard-data`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include' // <--- SENDS THE COOKIE TO THE BOUNCER
+                credentials: 'include' // SENDS THE COOKIE TO THE BOUNCER
             });
+
+            // THE 404 TRAP FIX: Intercept failed auth BEFORE trying to parse JSON
+            if (!dashResponse.ok) {
+                console.warn("Authentication failed or token missing. Redirecting.");
+                // Ensure this absolute path exactly matches your Vercel routing!
+                window.location.href = '/login/login.html';
+                return;
+            }
 
             const data = await dashResponse.json();
             const bookings = data.bookings;
@@ -161,16 +169,14 @@
                 const bookingEnd = new Date(booking.endDate);
                 if (bookingEnd >= now) {
                     upcoming.push(booking);
-                    console.log('here');
                 } else {
                     history.push(booking);
                 }
             });
 
-            console.log(upcoming);
-
             if (upcoming.length > 0) {
-                upcoming.sort((a, b) => new Date(a.startDate) - new Date(b.endDate));
+                // FIXED SORTING LOGIC: Compare start date to start date
+                upcoming.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
                 upcomingContainer.innerHTML = upcoming.map(b => createBookingCard(b, false)).join('');
             } else {
                 upcomingContainer.innerHTML = `
@@ -181,16 +187,16 @@
             }
 
             if (history.length > 0) {
-                history.sort((a, b) => new Date(b.startDate) - new Date(a.endDate));
+                history.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
                 historyContainer.innerHTML = history.map(b => createBookingCard(b, true)).join('');
             } else {
                 historyContainer.innerHTML = '<p class="text-gray-600 text-sm">No past sessions found.</p>';
             }
 
         } catch (error) {
-            console.error("Failed to load dashboard:", error);
-            upcomingContainer.innerHTML = '<p class="text-red-400">Failed to load data. Please refresh.</p>';
-            historyContainer.innerHTML = '';
+            console.error("Critical error loading dashboard:", error);
+            // Catch-all absolute redirect just in case
+            window.location.href = '../login/login.html';
         }
     }
 
@@ -202,11 +208,10 @@
             // you will want to swap this URL structure out for that cleaner approach!
             const response = await fetch(`${API_BASE_URL}/api/private/bookings?email=${encodeURIComponent(bookingEmail)}&venue=${encodeURIComponent(bookingVenue)}&date=${encodeURIComponent(startDate)}`, {
                 method: 'DELETE',
-                credentials: 'include' // Send the JWT cookie!
+                credentials: 'include'
             });
 
             if (response.ok) {
-                // Reload the dashboard to show the updated list!
                 await loadDashboard();
             } else {
                 alert("Failed to cancel booking.");
